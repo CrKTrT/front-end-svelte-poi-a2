@@ -1,10 +1,19 @@
 <script lang="ts">
-  import { subTitle } from "$lib/runes.svelte";
-  import Card from "$lib/ui/Card.svelte";
-  import DonateForm from "./DonateForm.svelte";
-  import DonationList from "$lib/ui/DonationList.svelte";
+  //import { subTitle } from "$lib/runes.svelte";
+  //import Card from "$lib/ui/Card.svelte";
+  //import DonateForm from "./Dashboard.svelte";
+  //import DonationList from "$lib/ui/DonationList.svelte";
 
-  subTitle.text = "Make a Donation";
+  import { onMount } from "svelte";
+  import { subTitle, currentPlaylists, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
+  import { donationService } from "$lib/services/donation-service";
+  import Card from "$lib/ui/Card.svelte";
+
+  subTitle.text = "Blackrock to SETU Travel POI Dashboard";
+  onMount(async () => {
+    await donationService.restoreSession();
+  });
+  
 </script>
 
 <div class="columns">
