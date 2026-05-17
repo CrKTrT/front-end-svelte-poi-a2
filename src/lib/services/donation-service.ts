@@ -1,7 +1,8 @@
 import axios from "axios";
-import type { Session, User } from "$lib/types/donation-types";
-import type { Candidate, Donation } from "$lib/types/donation-types";
-import { currentDonations, currentCandidates, loggedInUser } from "$lib/runes.svelte";
+import type { Playlist, Placemark, Session, User } from "$lib/types/donation-types";
+//import type { Candidate, Donation } from "$lib/types/donation-types";
+//import { currentDonations, currentCandidates, loggedInUser } from "$lib/runes.svelte";
+import { currentPlaylists, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
 
 export const donationService = {
   baseUrl: "http://localhost:4000",
@@ -61,8 +62,8 @@ export const donationService = {
   },
 
   clearSession() {
-    currentDonations.donations = [];
-    currentCandidates.candidates = [];
+    currentPlaylists.playlists = [];
+    currentPlacemarks.placemarks = [];
     loggedInUser.email = "";
     loggedInUser.name = "";
     loggedInUser.token = "";
@@ -72,8 +73,8 @@ export const donationService = {
 
   async refreshDonationInfo() {
     if (loggedInUser.token) {
-      currentDonations.donations = await this.getDonations(loggedInUser.token);
-      currentCandidates.candidates = await this.getCandidates(loggedInUser.token);
+      currentPlaylists.playlists = await this.getPlaylists(loggedInUser.token);
+      currentPlacemarks.placemarks = await this.getPlacemarks(loggedInUser.token);
     }
   },
 
