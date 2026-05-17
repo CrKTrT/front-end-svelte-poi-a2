@@ -31,7 +31,7 @@ export const donationService = {
           _id: response.data._id
         };
         this.saveSession(session, email);
-        await this.refreshDonationInfo();
+        await this.refreshAppData();
         return session;
       }
       return null;
@@ -58,7 +58,7 @@ export const donationService = {
       loggedInUser.token = session.token;
       loggedInUser._id = session._id;
     }
-    await this.refreshDonationInfo();
+    await this.refreshAppData();
   },
 
   clearSession() {
@@ -71,7 +71,7 @@ export const donationService = {
     localStorage.removeItem("donation");
   },
 
-  async refreshDonationInfo() {
+  async refreshAppData() {
     if (loggedInUser.token) {
       currentPlaylists.playlists = await this.getPlaylists(loggedInUser.token);
       currentPlacemarks.placemarks = await this.getPlacemarks(loggedInUser.token);
@@ -86,25 +86,27 @@ export const donationService = {
     localStorage.removeItem("donation");
   },
 
-  async donate(donation: Donation, token: string) {
+  async addPlacemark(playlistId: string, placemark: Placemark, token: string) {
     try {
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
       const response = await axios.post(
-        this.baseUrl + "/api/candidates/" + donation.candidate + "/donations",
-        donation
-      );
-      await this.refreshDonationInfo();
-      return response.status == 200;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
+      this.baseUrl + "/api/playlists/" + playlistId + "/tracks",
+      placemark
+    );
+
+    await this.refreshAppData();
+
+    return response.status == 200;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
   },
 
-  async getCandidates(token: string): Promise<Candidate[]> {
+  async getPlaylists(token: string): Promise<Playlist[]> {
     try {
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      const response = await axios.get(this.baseUrl + "/api/candidates");
+      const response = await axios.get(this.baseUrl + "/api/playlists");
       return response.data;
     } catch (error) {
       console.log(error);
@@ -112,10 +114,10 @@ export const donationService = {
     }
   },
 
-  async getDonations(token: string): Promise<Donation[]> {
+  async getPlacemarks(token: string): Promise<Placemark[]> {
     try {
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      const response = await axios.get(this.baseUrl + "/api/donations");
+      const response = await axios.get(this.baseUrl + "/api/tracks");
       return response.data;
     } catch (error) {
       console.log(error);
