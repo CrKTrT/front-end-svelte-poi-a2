@@ -10,7 +10,8 @@ export const donationService = {
   async signup(user: User): Promise<boolean> {
     try {
       const response = await axios.post(`${this.baseUrl}/api/users`, user);
-      return response.data.success === true;
+      //return response.data.success === true;
+      return response.status === 201 || response.status === 200;
     } catch (error) {
       console.log(error);
       return false;

@@ -13,18 +13,67 @@
   onMount(async () => {
     await donationService.restoreSession();
   });
-  
+
 </script>
 
+<h1 class="title">Blackrock to SETU Travel POI Dashboard</h1> //HEading added.
+
+<h2 class="subtitle">
+  Welcome {loggedInUser.name}
+</h2>
+
 <div class="columns">
+
   <div class="column">
-    <Card title="Donations to Date">
-      <DonationList />
+    <Card title="POI Categories">
+
+      {#if currentPlaylists.playlists.length > 0}
+
+        <div class="content">
+          <ul>
+            {#each currentPlaylists.playlists as playlist}
+              <li>
+                <strong>{playlist.title}</strong>
+              </li>
+            {/each}
+          </ul>
+        </div>
+
+      {:else}
+
+        <p>No categories available.</p>
+
+      {/if}
+
     </Card>
   </div>
+
   <div class="column">
-    <Card title="Please Donate">
-      <DonateForm />
+    <Card title="Placemarks">
+
+      {#if currentPlacemarks.placemarks.length > 0}
+
+        <div class="content">
+          <ul>
+            {#each currentPlacemarks.placemarks as placemark}
+              <li>
+                <strong>{placemark.name}</strong><br />
+                {placemark.description}<br />
+                Lat: {placemark.latitude},
+                Lng: {placemark.longitude}
+              </li>
+              <br />
+            {/each}
+          </ul>
+        </div>
+
+      {:else}
+
+        <p>No placemarks available.</p>
+
+      {/if}
+
     </Card>
   </div>
+
 </div>
