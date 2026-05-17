@@ -12,18 +12,17 @@ export interface Session {
     _id?: string;
   }
 
-  export interface Candidate {
-    firstName: string;
-    lastName: string;
-    office: string;
+  export interface Playlist {
     _id: string;
+    title: string;
+    userid?: string;
   }
   
-  export interface Donation {
-    amount: number;
-    method: string;
-    candidate: Candidate | string;
-    donor: User | string;
-    lat: number;
-    lng: number;
+  export interface Placemark {
+    _id?: string;
+    name: string;
+    description: string;
+    latitude: number;
+    longitude: number;
+    playlistid?: string;
   }
