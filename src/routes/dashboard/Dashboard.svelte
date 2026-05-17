@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { loggedInUser } from "$lib/runes.svelte";
+  import { loggedInUser, currentPlaylists } from "$lib/runes.svelte";
   import { donationService } from "$lib/services/donation-service";
   //import type { Donation } from "$lib/types/donation-types";
   //import Coordinates from "$lib/ui/Coordinates.svelte";
@@ -10,12 +10,24 @@
   //let selectedCandidate = $state("Simpson, Lisa");
   //let paymentMethods = ["paypal", "direct"];
   //let selectedMethod = $state("paypal");
+  
+  //Main Category State
   let title = $state("");
-  let message = $state("");
+  let categoryMessage = $state("");
+
+  // PLacemark addition
+
+  let selectedPlaylist = $state("");
+  let name = $state("");
+  let description = $state("");
+  let latitude = $state(0);
+  let longitude = $state(0);
+
+  let placemarkMessage = $state("");
 
   async function addPlaylist() {
     if (!title) {
-      message = "Please enter a category title";
+      categoryMessage = "Please enter a category title";
       return;
     }
 
@@ -33,26 +45,91 @@
       });
 
       if (response.ok) {
-        message = "Category added successfully";
+        categoryMessage = "Category added successfully";
         title = "";
 
         await donationService.refreshAppData();
 
       } else {
-        message = "Error adding category";
+        categoryMessage = "Error adding category";
       }
 
     } catch (error) {
       console.log(error);
-      message = "Server error";
+      categoryMessage = "Server error";
     }
   }
+
+  // ADD PLACEMARK
+
+  async function addPlacemark() {
+
+    if (
+      !selectedPlaylist ||
+      !name ||
+      !description
+    ) {
+      placemarkMessage = "Please complete all fields";
+      return;
+    }
+
+    try {
+
+      const response = await fetch(
+        `http://localhost:3000/api/playlists/${selectedPlaylist}/tracks`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + loggedInUser.token
+          },
+          body: JSON.stringify({
+            name,
+            description,
+            latitude,
+            longitude
+          })
+        }
+      );
+
+      if (response.ok) {
+
+        placemarkMessage = "Placemark added successfully";
+
+        name = "";
+        description = "";
+        latitude = 0;
+        longitude = 0;
+
+        await donationService.refreshAppData();
+
+      } else {
+
+        placemarkMessage = "Error adding placemark";
+
+      }
+
+    } catch (error) {
+
+      console.log(error);
+      placemarkMessage = "Server error";
+
+    }
+  }
+
+
 </script>
 
-<div class="box">
+<!-- CATEGORY SECTION -->
+
+<div class="box mb-5">
+
+  <h2 class="title is-4">
+    Add New POI Category
+  </h2>
 
   <div class="field">
-    <label class="label">POI Category Name</label>
+    <label class="label">Category Name</label>
 
     <div class="control">
       <input
@@ -61,19 +138,150 @@
         type="text"
         placeholder="Enter category name"
       />
-    </div>
   </div>
+</div>
 
   <div class="field">
     <div class="control">
-      <button onclick={() => addPlaylist()} class="button is-primary">
+      <button
+        onclick={() => addPlaylist()}
+        class="button is-primary"
+      >
         Add Category
       </button>
     </div>
   </div>
 
   <div class="content has-text-centered">
-    {message}
+    {categoryMessage}
+  </div>
+
+</div>
+
+<!-- PLACEMARK SECTION -->
+
+<div class="box">
+
+  <h2 class="title is-4">
+    Add New Placemark
+  </h2>
+
+<!-- CATEGORY SELECT -->
+
+<div class="field">
+
+    <label class="label">
+      Select Category
+    </label>
+
+    <div class="select is-fullwidth">
+
+      <select bind:value={selectedPlaylist}>
+
+        <option value="">
+          Choose Category
+        </option>
+
+        {#each currentPlaylists.playlists as playlist}
+
+          <option value={playlist._id}>
+            {playlist.title}
+          </option>
+
+        {/each}
+
+      </select>
+
+    </div>
+
+  </div>
+
+  <!-- NAME -->
+
+  <div class="field">
+
+    <label class="label">
+      Placemark Name
+    </label>
+
+    <input
+      bind:value={name}
+      class="input"
+      type="text"
+      placeholder="Enter placemark name"
+    />
+
+  </div>
+
+  <!-- DESCRIPTION -->
+
+  <div class="field">
+
+    <label class="label">
+      Description
+    </label>
+
+    <textarea
+      bind:value={description}
+      class="textarea"
+      placeholder="Enter description"
+    ></textarea>
+
+  </div>
+
+  <!-- LATITUDE -->
+
+  <div class="field">
+
+    <label class="label">
+      Latitude
+    </label>
+
+    <input
+      bind:value={latitude}
+      class="input"
+      type="number"
+      step="any"
+    />
+
+  </div>
+
+  <!-- LONGITUDE -->
+
+  <div class="field">
+
+    <label class="label">
+      Longitude
+    </label>
+
+    <input
+      bind:value={longitude}
+      class="input"
+      type="number"
+      step="any"
+    />
+
+  </div>
+
+  <!-- BUTTON -->
+
+  <div class="field">
+
+    <div class="control">
+
+      <button
+        onclick={() => addPlacemark()}
+        class="button is-link"
+      >
+        Add Placemark
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="content has-text-centered">
+    {placemarkMessage}
   </div>
 
 </div>
