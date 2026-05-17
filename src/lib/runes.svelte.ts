@@ -1,4 +1,4 @@
-import type { Candidate, Donation } from "./types/donation-types";
+import type { Playlist, Placemark } from "./types/donation-types";
 
 export const subTitle = $state({ text: "" });
 export const loggedInUser = $state({
@@ -7,5 +7,5 @@ export const loggedInUser = $state({
   token: "",
   _id: ""
 });
-export const currentDonations = $state({ donations: [] as Donation[] });
-export const currentCandidates = $state({ candidates: [] as Candidate[] });
+export const currentPlaylists = $state({ playlists: [] as Playlist[] });
+export const currentPlacemarks = $state({ placemarks: [] as Placemark[] });
