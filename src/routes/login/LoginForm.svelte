@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { loggedInUser } from "$lib/runes.svelte";
+  //import { loggedInUser } from "$lib/runes.svelte";
   import { donationService } from "$lib/services/donation-service";
   import Message from "$lib/ui/Message.svelte";
   import UserCredentials from "$lib/ui/UserCredentials.svelte";
@@ -13,7 +13,7 @@
     console.log(`attempting to log in email: ${email} with password: ${password}`);
     let session = await donationService.login(email, password);
     if (session) {
-      goto("/donate");
+      goto("/dashboard");
     } else {
       email = "";
       password = "";

@@ -1,6 +1,6 @@
 <script lang="ts">
   import LoginForm from "./LoginForm.svelte";
-</script>
+ </script>
 
 <section class="hero is-fullheight">
   <div class="hero-body">
@@ -11,4 +11,4 @@
       </div>
     </div>
   </div>
-</section>
+ </section>

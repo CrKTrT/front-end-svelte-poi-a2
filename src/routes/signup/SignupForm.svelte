@@ -3,6 +3,7 @@
   import Message from "$lib/ui/Message.svelte";
   import UserCredentials from "$lib/ui/UserCredentials.svelte";
   import UserDetails from "$lib/ui/UserDetails.svelte";
+  import { donationService } from "$lib/services/donation-service";
 
   let firstName = $state("");
   let lastName = $state("");
@@ -11,9 +12,14 @@
   let message = $state("");
 
   async function signup() {
-    const success = false;
+    const success = await donationService.signup({
+      firstName,
+      lastName,
+      email,
+      password
+    });
     if (success) {
-      goto("/donate");
+      goto("/login");
     } else {
       message = "Error Trying to sign up";
     }

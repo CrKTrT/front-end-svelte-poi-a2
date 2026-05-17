@@ -8,6 +8,7 @@
   import { subTitle, currentPlaylists, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
   import { donationService } from "$lib/services/donation-service";
   import Card from "$lib/ui/Card.svelte";
+  import Dashboard from "./Dashboard.svelte";
 
   subTitle.text = "Blackrock to SETU Travel POI Dashboard";
   onMount(async () => {
@@ -75,5 +76,9 @@
 
     </Card>
   </div>
-
+  <div class="mt-5">
+    <Card title="Add New POI Category">
+      <Dashboard />
+    </Card>
+  </div>
 </div>
