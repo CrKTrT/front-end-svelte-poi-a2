@@ -1,11 +1,11 @@
 import axios from "axios";
-import type { Playlist, Placemark, Session, User } from "$lib/types/donation-types";
+import type { Playlist, Placemark, Session, User } from "$lib/types/playtime-types";
 //import type { Candidate, Donation } from "$lib/types/donation-types";
 //import { currentDonations, currentCandidates, loggedInUser } from "$lib/runes.svelte";
 import { currentPlaylists, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
 
 export const donationService = {
-  baseUrl: "http://localhost:4000",
+  baseUrl: "http://localhost:3000", // Changed port same as the backend URL
 
   async signup(user: User): Promise<boolean> {
     try {
@@ -46,11 +46,11 @@ export const donationService = {
     loggedInUser.name = session.name;
     loggedInUser.token = session.token;
     loggedInUser._id = session._id;
-    localStorage.donation = JSON.stringify(loggedInUser);
+    localStorage.playtime = JSON.stringify(loggedInUser);
   },
 
   async restoreSession() {
-    const savedLoggedInUser = localStorage.donation;
+    const savedLoggedInUser = localStorage.playtime;
     if (savedLoggedInUser) {
       const session = JSON.parse(savedLoggedInUser);
       loggedInUser.email = session.email;
@@ -68,7 +68,7 @@ export const donationService = {
     loggedInUser.name = "";
     loggedInUser.token = "";
     loggedInUser._id = "";
-    localStorage.removeItem("donation");
+    localStorage.removeItem("playtime");
   },
 
   async refreshAppData() {
@@ -83,7 +83,7 @@ export const donationService = {
     loggedInUser.name = "";
     loggedInUser.token = "";
     loggedInUser._id = "";
-    localStorage.removeItem("donation");
+    localStorage.removeItem("playtime");
   },
 
   async addPlacemark(playlistId: string, placemark: Placemark, token: string) {
