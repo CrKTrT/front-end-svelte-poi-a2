@@ -1,50 +1,99 @@
-<section class="hero is-fullheight is-default is-bold">
-  
-  <div class="hero-head"></div>
-  
+<section class="hero is-fullheight is-light">
+
   <div class="hero-body">
-  
-    <div class="container has-text-centered">
-  
+
+    <div class="container">
+
       <div class="columns is-vcentered">
-  
-        <div class="column is-5">
-  
+
+        <!-- IMAGE SECTION -->
+
+        <div class="column is-6">
+
           <figure class="image">
-            <img class="object-fit" src="/Blackrock.jpeg" alt="Blackrock Dublin" />
+            <img
+              class="hero-image"
+              src="/Blackrock.png"
+              alt="Blackrock Explorer"
+            />
           </figure>
-  
+
         </div>
-  
-        <div class="column is-6 is-offset-1">
-  
-          <h1 class="title is-2 mb-5">
-            <span class="icon mr-5"><i class="fas fa-map-marker-alt"></i></span><span
-              class="icon mr-4"><i class="fas fa-vote-yea"></i></span
-            >
-            <p>Blackrock Explorer</p>
+
+        <!-- TEXT SECTION -->
+
+        <div class="column is-5 is-offset-1">
+
+          <h1 class="title is-1 has-text-dark">
+
+            <span class="icon mr-3">
+              <i class="fas fa-map-marked-alt"></i>
+            </span>
+
+            Blackrock Explorer
+
           </h1>
-  
-          <h2 class="subtitle is-4 mt-2">Discover Blackrock's hidden gems!</h2>
-  
-          <p class="has-text-centered">
-  
-            <a class="button is-medium is-success" href="/signup">
-              <span class="icon"><i class="fas fa-plus"></i></span><span>Sign Up</span>
+
+          <h2 class="subtitle is-3 has-text-grey-dark mt-4">
+
+            Discover Blackrock's Hidden Gems
+            
+          </h2>
+
+          <div class="content mt-5">
+
+            <p> Interactive Maps </p>
+
+            <p> Real Placemark Locations </p>
+
+            <p> Organised POI Categories </p>
+
+            <p> Satellite & Terrain Map Views </p>
+
+          </div>
+
+          <!-- BUTTONS -->
+
+          <div class="buttons mt-6">
+
+            <a class="button is-success is-medium" href="/signup">
+
+              <span class="icon">
+                <i class="fas fa-user-plus"></i>
+              </span>
+
+              <span>Sign Up</span>
+
             </a>
-  
-            <a class="button is-medium is-link" href="/login">
-              <span class="icon"><i class="fas fa-sign-in"></i></span><span>Login</span>
+
+            <a class="button is-link is-medium" href="/login">
+
+              <span class="icon">
+                <i class="fas fa-sign-in-alt"></i>
+              </span>
+
+              <span>Login</span>
+
             </a>
-  
-          </p>
-  
+
+          </div>
+
         </div>
-  
+
       </div>
-  
+
     </div>
-  
+
   </div>
-  
+
 </section>
+
+<style>
+
+  .hero-image {
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    object-fit: cover;
+  }
+
+</style>
