@@ -36,3 +36,5 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+
+Creating eCharts reference GitHub: https://github.com/apache/echarts/tree/master/src and https://github.com/bherbruck/svelte-echarts/blob/main/src/lib/svelte-echarts/components/Chart.svelte

@@ -1,8 +1,4 @@
 <script lang="ts">
-  //import { subTitle } from "$lib/runes.svelte";
-  //import Card from "$lib/ui/Card.svelte";
-  //import DonateForm from "./Dashboard.svelte";
-  //import DonationList from "$lib/ui/DonationList.svelte";
 
   import { onMount } from "svelte";
   import { subTitle, currentPlaylists, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
@@ -11,17 +7,75 @@
   import Dashboard from "./Dashboard.svelte";
 
   subTitle.text = "Blackrock to SETU Travel POI Dashboard";
+
   onMount(async () => {
     await donationService.restoreSession();
   });
 
+  // Delete category function added here to avoid circular imports with Dashboard.svelte
+
+  async function deletePlaylist(id: string) {
+
+    try {
+
+      const response = await fetch(
+        `http://localhost:3000/api/playlists/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: "Bearer " + loggedInUser.token
+          }
+        }
+      );
+
+      if (response.ok) {
+        await donationService.refreshAppData();
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  }
+
+  // Delete placemark function added here to avoid circular imports with Dashboard.svelte
+
+  async function deletePlacemark(id: string) {
+
+    try {
+
+      const response = await fetch(
+        `http://localhost:3000/api/tracks/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: "Bearer " + loggedInUser.token
+          }
+        }
+      );
+
+      if (response.ok) {
+        await donationService.refreshAppData();
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  }
+
 </script>
 
+<!-- HERO -->
+
 <section class="hero is-primary mb-5">
+
   <div class="hero-body">
 
     <p class="title">
-      Blackrock → SETU POI Explorer
+       Blackrock → SETU POI Explorer
     </p>
 
     <p class="subtitle">
@@ -29,18 +83,25 @@
     </p>
 
   </div>
+
 </section>
+
+<!-- STATS -->
 
 <div class="columns mb-5">
 
   <div class="column">
 
     <div class="box has-text-centered">
-      <p class="heading">Categories</p>
+
+      <p class="heading">
+        Categories
+      </p>
 
       <p class="title">
         {currentPlaylists.playlists.length}
       </p>
+
     </div>
 
   </div>
@@ -48,11 +109,15 @@
   <div class="column">
 
     <div class="box has-text-centered">
-      <p class="heading">Placemarks</p>
+
+      <p class="heading">
+        Placemarks
+      </p>
 
       <p class="title">
         {currentPlacemarks.placemarks.length}
       </p>
+
     </div>
 
   </div>
@@ -60,40 +125,65 @@
   <div class="column">
 
     <div class="box has-text-centered">
-      <p class="heading">Logged In User</p>
+
+      <p class="heading">
+        Logged In User
+      </p>
 
       <p class="title is-5">
-        {loggedInUser.name}
+         {loggedInUser.name}
       </p>
+
     </div>
 
   </div>
 
 </div>
 
+<!-- MAIN CONTENT -->
+
 <div class="columns">
+
+  <!-- LEFT COLUMN -->
 
   <div class="column is-4">
 
-    <Card title="POI Categories">
+    <!-- CATEGORIES -->
+
+    <Card title=" POI Categories">
 
       {#if currentPlaylists.playlists.length > 0}
 
-        <div class="content">
+        {#each currentPlaylists.playlists as playlist}
 
-          <ul>
+          <div class="box mb-3">
 
-            {#each currentPlaylists.playlists as playlist}
+            <div class="level">
 
-              <li class="mb-3">
-                 <strong>{playlist.title}</strong>
-              </li>
+              <div class="level-left">
 
-            {/each}
+                <strong>
+                  {playlist.title}
+                </strong>
 
-          </ul>
+              </div>
 
-        </div>
+              <div class="level-right">
+
+                <button
+                  class="button is-small is-danger"
+                  onclick={() => deletePlaylist(playlist._id)}
+                >
+                  Delete
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        {/each}
 
       {:else}
 
@@ -103,17 +193,25 @@
 
     </Card>
 
+    <!-- ADD CATEGORY / PLACEMARK -->
+
     <div class="mt-5">
-      <Card title="Add New POI Category">
+
+      <Card title=" Add New POI">
+
         <Dashboard />
+
       </Card>
+
     </div>
 
   </div>
 
+  <!-- RIGHT COLUMN -->
+
   <div class="column">
 
-    <Card title="Recent Placemarks">
+    <Card title=" Recent Placemarks">
 
       {#if currentPlacemarks.placemarks.length > 0}
 
@@ -128,17 +226,31 @@
                 <div class="card-content">
 
                   <p class="title is-5">
-                    {placemark.name}
+                     {placemark.name}
                   </p>
 
                   <p class="content">
                     {placemark.description}
                   </p>
 
-                  <p>
-                     {placemark.latitude},
+                  <p class="mb-3">
+
+                    <strong>Lat:</strong>
+                    {placemark.latitude}
+
+                    <br />
+
+                    <strong>Lng:</strong>
                     {placemark.longitude}
+
                   </p>
+
+                  <button
+                    class="button is-small is-danger"
+                    onclick={() => deletePlacemark(placemark._id!)}
+                  >
+                    Delete Placemark
+                  </button>
 
                 </div>
 

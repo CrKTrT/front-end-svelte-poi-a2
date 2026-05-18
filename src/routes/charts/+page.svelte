@@ -1,4 +1,5 @@
 <script lang="ts">
+  
   import { curentDataSets } from "$lib/runes.svelte";
   // @ts-ignore
   import Chart from "svelte-frappe-charts";
@@ -6,14 +7,25 @@
 </script>
 
 <div class="columns">
-  <div class="column">
-    <Card title="Donations By Method">
-      <Chart data={curentDataSets.donationsByMethod} type="bar" />
-    </Card>
-  </div>
-  <div class="column has-text-centered">
-    <Card title="Donations By Method">
-      <Chart data={curentDataSets.donationsByMethod} type="pie" />
-    </Card>
-  </div>
+
+    <div class="column">
+
+        <Card title="Donations By Method">
+
+            <Chart data={curentDataSets.donationsByMethod} type="bar" />
+
+        </Card>
+
+    </div>
+
+    <div class="column has-text-centered">
+
+        <Card title="Donations By Method">
+
+            <Chart data={curentDataSets.donationsByMethod} type="pie" />
+
+        </Card>
+
+    </div>
+
 </div>
