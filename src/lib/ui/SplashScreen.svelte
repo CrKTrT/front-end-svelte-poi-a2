@@ -5,7 +5,7 @@
       <div class="columns is-vcentered">
         <div class="column is-5">
           <figure class="image">
-            <img class="object-fit" src="/Blackrock.png" alt="Blackrock Dublin" />
+            <img class="object-fit" src="/Blackrock.jpeg" alt="Blackrock Dublin" />
           </figure>
         </div>
         <div class="column is-6 is-offset-1">
