@@ -4,22 +4,61 @@
   console.log(loggedInUser._id);
 </script>
 
-<nav class="navbar is-full-width">
+
+<nav class="navbar is-dark is-spaced shadow-lg">
   <div class="container">
+
+    <!-- LOGO / TITLE -->
+
     <div class="navbar-brand">
+
       <a class="navbar-item" href="/dashboard">
-        <span class="icon"> <i class="fas fa-map-marker-alt"></i></span><span class="icon mr-1">
-          <i class="far fa-money-bill-alt"></i></span
-        ><span><strong>Donation</strong> </span>
+
+        <span class="icon mr-2">
+          
+        </span>
+
+        <span class="has-text-weight-bold is-size-5">
+          Blackrock POI Guide
+        </span>
+
       </a>
+
     </div>
-    <div id="navbarMenu" class="navbar-menu">
+
+    <!-- MENU LINKS -->
+
+    <div class="navbar-menu">
+
       <div class="navbar-end">
-        <a class="navbar-item" href="/donate"> Donate </a>
-        <a class="navbar-item" href="/report"> Report </a>
-        <a class="navbar-item" href="/logout"> Logout [{loggedInUser.name}]</a>
+
+        <!-- DASHBOARD -->
+
+        <a class="navbar-item" href="/dashboard">
+          Dashboard
+        </a>
+
+        <!-- MAPS -->
+
+        <a class="navbar-item" href="/maps">
+          Maps
+        </a>
+
+        <!-- USER -->
+
+        <div class="navbar-item">
+           {loggedInUser.name}
+        </div>
+
+        <!-- LOGOUT -->
+
+        <a class="navbar-item has-text-danger" href="/logout">
+           Logout
+        </a>
+
       </div>
-      <div></div>
+
     </div>
+
   </div>
 </nav>
