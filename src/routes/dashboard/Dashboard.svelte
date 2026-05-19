@@ -13,7 +13,7 @@
   let description = $state("");
   let latitude = $state(0);
   let longitude = $state(0);
-  let selectedFile: File | null = null;
+  let imageFile: File | null = null;
   let placemarkMessage = $state("");
 
  async function addPlaylist() {
@@ -86,7 +86,8 @@
   // ADD PLACEMARK
 
   async function addPlacemark() {
-
+    let imageUrl = "";
+    
     if (
       !selectedPlaylist ||
       !name ||
@@ -102,50 +103,42 @@
 
     try {
 
-      let image = "";
+      //let image = "";
+    
 
       // CLOUDINARY IMAGE UPLOAD
 
-      if (selectedFile) {
+      if (imageFile) {
 
-        const formData = new FormData();
+  const formData =
+    new FormData();
 
-        formData.append(
-          "imagefile",
-          selectedFile
-        );
+  formData.append(
+    "imagefile",
+    imageFile
+  );
 
-        const uploadResponse =
-          await fetch(
-            "http://localhost:3000/api/images",
-            {
-
-              method: "POST",
-
-              headers: {
-
-                Authorization:
-                  "Bearer " +
-                  loggedInUser.token
-
-              },
-
-              body: formData
-
-            }
-          );
-
-        if (uploadResponse.ok) {
-
-          const uploadData =
-            await uploadResponse.json();
-
-          image =
-            uploadData.imageUrl;
-
-        }
-
+  const imageResponse =
+    await fetch(
+      "http://localhost:3000/api/images",
+      {
+        method: "POST",
+        headers: {
+          Authorization:
+            "Bearer " +
+            loggedInUser.token
+        },
+        body: formData
       }
+    );
+
+  const uploadedImage =
+    await imageResponse.json();
+
+  imageUrl =
+    uploadedImage.imageUrl;
+
+}
 
       // SAVE PLACEMARK
 
@@ -173,7 +166,7 @@
               description,
               latitude,
               longitude,
-              image
+              image: imageUrl
 
             })
 
@@ -195,7 +188,7 @@
 
         longitude = 0;
 
-        selectedFile = null;
+        imageFile = null;
 
         await donationService.refreshAppData();
 
@@ -379,31 +372,19 @@
   <div class="field">
 
     <label class="label">
-      Upload Image
-    </label>
+    Upload Image
+  </label>
 
-    <input
-      class="input"
-      type="file"
-      accept="image/*"
-
-      onchange={(event) => {
-
-        const target =
-          event.target as HTMLInputElement;
-
-        if (
-          target.files &&
-          target.files.length > 0
-        ) {
-
-          selectedFile =
-            target.files[0];
-
-        }
-
-      }}
-    />
+  <input
+  class="input"
+  type="file"
+  accept="image/*"
+  onchange={(e) => {
+    imageFile =
+      (e.currentTarget as HTMLInputElement)
+        .files?.[0] || null;
+  }}
+/>
 
   </div>
 

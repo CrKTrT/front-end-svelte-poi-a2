@@ -300,15 +300,20 @@ async function updatePlacemark() {
 
                   <div class="card-image">
 
-                    <figure class="image is-4by3">
+                    <figure class="image mb-3">
 
-                      <img
-                        src={placemark.image}
-                        alt={placemark.name}
-                        style="object-fit: cover;"
-                      />
+                        <img
+                          src={placemark.image}
+                          alt={placemark.name}
+                          style="
+                            border-radius: 12px;
+                            object-fit: cover;
+                            max-height: 220px;
+                            width: 100%;
+                          "
+                        />
 
-                    </figure>
+                      </figure>
 
                   </div>
 
@@ -316,17 +321,17 @@ async function updatePlacemark() {
 
                 <!-- CONTENT --> 
 
-                <div class="card-content">
+              <div class="card-content">
 
-                  <p class="title is-5">
+                <p class="title is-5">
                      {placemark.name}
-                  </p>
+                </p>
 
-                  <p class="content">
+                <p class="content">
                     {placemark.description}
-                  </p>
+                </p>
 
-                  <p class="mb-3">
+                <p class="mb-3">
 
                     <strong>Lat:</strong>
                     {placemark.latitude}
@@ -336,7 +341,7 @@ async function updatePlacemark() {
                     <strong>Lng:</strong>
                     {placemark.longitude}
 
-                  </p>
+                 </p>
 
                   <button
                     class="button is-small is-danger"
