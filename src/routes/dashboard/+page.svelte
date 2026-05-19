@@ -8,6 +8,13 @@
 
   subTitle.text = "Blackrock to SETU Travel POI Dashboard";
 
+  let editingPlacemark = $state<any>(null);
+
+  let editName = $state("");
+  let editDescription = $state("");
+  let editLatitude = $state(0);
+  let editLongitude = $state(0);
+
   onMount(async () => {
     await donationService.restoreSession();
   });
@@ -65,6 +72,70 @@
 
     }
   }
+
+function openEditModal(placemark: any) {
+
+  editingPlacemark = placemark;
+
+  editName = placemark.name;
+  editDescription = placemark.description;
+  editLatitude = placemark.latitude;
+  editLongitude = placemark.longitude;
+
+  }
+
+async function updatePlacemark() {
+
+  if (!editingPlacemark) {
+    return;
+  }
+
+  try {
+
+    const response = await fetch(
+      `http://localhost:3000/api/tracks/${editingPlacemark._id}`,
+      {
+
+        method: "PUT",
+
+        headers: {
+
+          "Content-Type": "application/json",
+
+          Authorization:
+            "Bearer " +
+            loggedInUser.token
+
+        },
+
+        body: JSON.stringify({
+
+          name: editName,
+          description: editDescription,
+          latitude: editLatitude,
+          longitude: editLongitude
+
+        })
+
+      }
+    );
+
+    if (response.ok) {
+
+      editingPlacemark = null;
+
+      await donationService.refreshAppData();
+
+    }
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+  }
+
 
 </script>
 
@@ -223,6 +294,28 @@
 
               <div class="card">
 
+                <!-- IMAGE -->
+
+                {#if placemark.image}
+
+                  <div class="card-image">
+
+                    <figure class="image is-4by3">
+
+                      <img
+                        src={placemark.image}
+                        alt={placemark.name}
+                        style="object-fit: cover;"
+                      />
+
+                    </figure>
+
+                  </div>
+
+                {/if}
+
+                <!-- CONTENT --> 
+
                 <div class="card-content">
 
                   <p class="title is-5">
@@ -252,6 +345,12 @@
                     Delete Placemark
                   </button>
 
+                  <button
+                    class="button is-small is-info ml-2"
+                    onclick={() => openEditModal(placemark)}
+                  >
+                    Edit Placemark
+                  </button>
                 </div>
 
               </div>
@@ -273,3 +372,113 @@
   </div>
 
 </div>
+
+{#if editingPlacemark}
+
+<div class="modal is-active">
+
+  <div
+    class="modal-background"
+    onclick={() => editingPlacemark = null}
+  ></div>
+
+  <div class="modal-card">
+
+    <header class="modal-card-head">
+
+      <p class="modal-card-title">
+        Edit Placemark
+      </p>
+
+      <button
+        class="delete"
+        aria-label="close"
+        onclick={() => editingPlacemark = null}
+      ></button>
+
+    </header>
+
+    <section class="modal-card-body">
+
+      <div class="field">
+
+        <label class="label">
+          Name
+        </label>
+
+        <input
+          bind:value={editName}
+          class="input"
+          type="text"
+        />
+
+      </div>
+
+      <div class="field">
+
+        <label class="label">
+          Description
+        </label>
+
+        <textarea
+          bind:value={editDescription}
+          class="textarea"
+        ></textarea>
+
+      </div>
+
+      <div class="field">
+
+        <label class="label">
+          Latitude
+        </label>
+
+        <input
+          bind:value={editLatitude}
+          class="input"
+          type="number"
+          step="any"
+        />
+
+      </div>
+
+      <div class="field">
+
+        <label class="label">
+          Longitude
+        </label>
+
+        <input
+          bind:value={editLongitude}
+          class="input"
+          type="number"
+          step="any"
+        />
+
+      </div>
+
+    </section>
+
+    <footer class="modal-card-foot">
+
+      <button
+        class="button is-success"
+        onclick={() => updatePlacemark()}
+      >
+        Save Changes
+      </button>
+
+      <button
+        class="button"
+        onclick={() => editingPlacemark = null}
+      >
+        Cancel
+      </button>
+
+    </footer>
+
+  </div>
+
+</div>
+
+{/if}
