@@ -3,13 +3,13 @@
   import { onMount } from "svelte";
   import type { Control, Map as LeafletMap } from "leaflet";
 
-  let { height = 80 } = $props();
-  let id = "home-map-id";
+  let { height = 80, activeLayer = "Terrain" } = $props();
+  //let id = "home-map-id";
+  let id = "map-" + Math.random().toString(36).substring(2, 9);
   let location = { lat: 53.2734, lng: -7.7783203 };
   let zoom = 8;
   let minZoom = 7;
-  let activeLayer = "Terrain";
-
+ 
   let imap: LeafletMap;
   let control: Control.Layers;
   let overlays: Control.LayersObject = {};
