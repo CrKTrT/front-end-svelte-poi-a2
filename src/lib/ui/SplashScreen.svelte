@@ -56,23 +56,54 @@
 
           <div class="buttons mt-6">
 
-            <a class="button is-success is-medium" href="/signup">
+              <!-- SIGN UP -->
+
+               <a
+                  class="button is-success is-medium"
+                  href="/signup"
+                >
+
+                <span class="icon">
+                  <i class="fas fa-user-plus"></i>
+                </span>
+
+                <span>
+                  Sign Up
+                </span>
+
+                </a>
+
+              <!-- LOGIN -->
+
+                <a
+                  class="button is-link is-medium"
+                  href="/login"
+                >
+
+                <span class="icon">
+                  <i class="fas fa-sign-in-alt"></i>
+                </span>
+
+                <span>
+                  Login
+                </span>
+
+                </a>
+
+            <!-- GITHUB LOGIN -->
+
+            <a
+              class="button is-dark is-medium"
+              href="http://localhost:3000/api/github"
+            >
 
               <span class="icon">
-                <i class="fas fa-user-plus"></i>
+                <i class="fab fa-github"></i>
               </span>
 
-              <span>Sign Up</span>
-
-            </a>
-
-            <a class="button is-link is-medium" href="/login">
-
-              <span class="icon">
-                <i class="fas fa-sign-in-alt"></i>
+              <span>
+                GitHub Login
               </span>
-
-              <span>Login</span>
 
             </a>
 
