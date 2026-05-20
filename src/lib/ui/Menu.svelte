@@ -12,17 +12,17 @@
 
     <div class="navbar-brand">
 
-      <a class="navbar-item" href="/dashboard">
+          <a class="navbar-item" href="/dashboard">
 
-        <span class="icon mr-2">
+              <span class="icon mr-2">
           
-        </span>
+              </span>
 
-        <span class="has-text-weight-bold is-size-5">
-          Blackrock POI Guide
-        </span>
+              <span class="has-text-weight-bold is-size-5">
+                Blackrock POI Guide
+              </span>
 
-      </a>
+          </a>
 
     </div>
 
@@ -42,6 +42,10 @@
 
         <a class="navbar-item" href="/maps">
           Maps
+        </a>
+
+        <a class="navbar-item" href="/analytics">
+          Analytics
         </a>
 
         <!-- USER -->
