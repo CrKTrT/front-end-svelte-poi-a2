@@ -1,42 +1,64 @@
 <script lang="ts">
 
   import { onMount } from "svelte";
+
   import { subTitle, currentPlaylists, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
+
   import { donationService } from "$lib/services/donation-service";
+
   import Card from "$lib/ui/Card.svelte";
+
   import Dashboard from "./Dashboard.svelte";
 
-  subTitle.text = "Blackrock to SETU Travel POI Dashboard";
+  subTitle.text =
+    "Blackrock to SETU Travel POI Dashboard";
 
-  let editingPlacemark = $state<any>(null);
+  // EDIT MODAL STATE
+
+  let editingPlacemark = $state<any | null>(null);
 
   let editName = $state("");
+
   let editDescription = $state("");
+
   let editLatitude = $state(0);
+
   let editLongitude = $state(0);
 
+  // FILTER STATE (for next step)
+
+  let selectedCategory = $state("");
+
   onMount(async () => {
+
     await donationService.restoreSession();
+
   });
 
-  // Delete category function added here to avoid circular imports with Dashboard.svelte
+  // DELETE CATEGORY
 
   async function deletePlaylist(id: string) {
 
     try {
 
-      const response = await fetch(
-        `http://localhost:3000/api/playlists/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + loggedInUser.token
+      const response =
+        await fetch(
+          `http://localhost:3000/api/playlists/${id}`,
+          {
+            method: "DELETE",
+
+            headers: {
+              Authorization:
+                "Bearer " +
+                loggedInUser.token
+            }
           }
-        }
-      );
+        );
 
       if (response.ok) {
+
         await donationService.refreshAppData();
+
       }
 
     } catch (error) {
@@ -44,26 +66,33 @@
       console.log(error);
 
     }
+
   }
 
-  // Delete placemark function added here to avoid circular imports with Dashboard.svelte
+  // DELETE PLACEMARK
 
   async function deletePlacemark(id: string) {
 
     try {
 
-      const response = await fetch(
-        `http://localhost:3000/api/tracks/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + loggedInUser.token
+      const response =
+        await fetch(
+          `http://localhost:3000/api/tracks/${id}`,
+          {
+            method: "DELETE",
+
+            headers: {
+              Authorization:
+                "Bearer " +
+                loggedInUser.token
+            }
           }
-        }
-      );
+        );
 
       if (response.ok) {
+
         await donationService.refreshAppData();
+
       }
 
     } catch (error) {
@@ -71,73 +100,92 @@
       console.log(error);
 
     }
-  }
-
-function openEditModal(placemark: any) {
-
-  editingPlacemark = placemark;
-
-  editName = placemark.name;
-  editDescription = placemark.description;
-  editLatitude = placemark.latitude;
-  editLongitude = placemark.longitude;
 
   }
 
-async function updatePlacemark() {
+  // OPEN EDIT MODAL
 
-  if (!editingPlacemark) {
-    return;
+  function openEditModal(placemark: any) {
+
+    editingPlacemark = placemark;
+
+    editName =
+      placemark.name;
+
+    editDescription =
+      placemark.description;
+
+    editLatitude =
+      placemark.latitude;
+
+    editLongitude =
+      placemark.longitude;
+
   }
 
-  try {
+  // UPDATE PLACEMARK
 
-    const response = await fetch(
-      `http://localhost:3000/api/tracks/${editingPlacemark._id}`,
-      {
+  async function updatePlacemark() {
 
-        method: "PUT",
+    if (!editingPlacemark) {
 
-        headers: {
-
-          "Content-Type": "application/json",
-
-          Authorization:
-            "Bearer " +
-            loggedInUser.token
-
-        },
-
-        body: JSON.stringify({
-
-          name: editName,
-          description: editDescription,
-          latitude: editLatitude,
-          longitude: editLongitude
-
-        })
-
-      }
-    );
-
-    if (response.ok) {
-
-      editingPlacemark = null;
-
-      await donationService.refreshAppData();
+      return;
 
     }
 
-  } catch (error) {
+    try {
 
-    console.log(error);
+      const response =
+        await fetch(
+          `http://localhost:3000/api/tracks/${editingPlacemark._id}`,
+          {
+
+            method: "PUT",
+
+            headers: {
+
+              "Content-Type":
+                "application/json",
+
+              Authorization:
+                "Bearer " +
+                loggedInUser.token
+
+            },
+
+            body: JSON.stringify({
+
+              name: editName,
+
+              description: editDescription,
+
+              latitude: editLatitude,
+
+              longitude: editLongitude
+
+            })
+
+          }
+        );
+
+      if (response.ok) {
+
+        editingPlacemark = null;
+
+        await donationService.refreshAppData();
+
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
 
   }
-
-  }
-
 
 </script>
+
 
 <!-- HERO -->
 

@@ -1,163 +1,159 @@
 <script lang="ts">
 
   import { onMount } from "svelte";
-
-  import { currentPlacemarks, subTitle } from "$lib/runes.svelte";
-
+  import { currentPlaylists, currentPlacemarks, subTitle } from "$lib/runes.svelte";
   import Card from "$lib/ui/Card.svelte";
-
-  import LeafletMap
-    from "$lib/ui/LeafletMap.svelte";
+  import LeafletMap from "$lib/ui/LeafletMap.svelte";
 
   subTitle.text =
-    "Multi-Map Dashboard";
+    "Interactive POI Maps";
 
   let allMap: LeafletMap;
-
-  let categoryMap: LeafletMap;
-
+  let filteredMap: LeafletMap;
   let satelliteMap: LeafletMap;
+  let selectedCategory = $state("");
 
   onMount(async () => {
 
-    // wait for maps to fully mount
-
-    setTimeout(async () => {
-
-      // ALL MAP
-
-      for (const placemark of currentPlacemarks.placemarks) {
-
-        await allMap.addMarker(
-
-          placemark.latitude,
-
-          placemark.longitude,
-
-          placemark.name
-
-        );
-
-      }
-
-      // CATEGORY MAP
-
-      for (const placemark of currentPlacemarks.placemarks) {
-
-        await categoryMap.addMarker(
-
-          placemark.latitude,
-
-          placemark.longitude,
-
-          placemark.description
-
-        );
-
-      }
-
-      // SATELLITE MAP
-
-      for (const placemark of currentPlacemarks.placemarks) {
-
-        await satelliteMap.addMarker(
-
-          placemark.latitude,
-
-          placemark.longitude,
-
-          placemark.name
-
-        );
-
-      }
-
-      // MOVE MAPS
-
-      const first =
-        currentPlacemarks.placemarks[0];
-
-      if (first) {
-
-        await allMap.moveTo(
-          first.latitude,
-          first.longitude
-        );
-
-        await categoryMap.moveTo(
-          first.latitude,
-          first.longitude
-        );
-
-        await satelliteMap.moveTo(
-          first.latitude,
-          first.longitude
-        );
-
-      }
-
-    }, 500);
+    loadAllMarkers();
+    loadFilteredMarkers();
+    loadSatelliteMarkers();
 
   });
 
+  async function loadAllMarkers() {
+    for (const placemark of currentPlacemarks.placemarks) {
+      await allMap.addMarker(
+        placemark.latitude,
+        placemark.longitude,
+        `
+          <strong>${placemark.name}</strong>
+          <br/>
+          ${placemark.description}
+        `
+      );
+    }
+  }
+
+  async function loadFilteredMarkers() {
+
+    filteredMap.clearMarkers();
+
+    const filtered =
+      selectedCategory
+        ? currentPlacemarks.placemarks.filter(
+            (placemark) =>
+              placemark.playlistid ===
+              selectedCategory
+          )
+        : currentPlacemarks.placemarks;
+
+    for (const placemark of filtered) {
+
+      await filteredMap.addMarker(
+
+        placemark.latitude,
+        placemark.longitude,
+
+        `
+          <strong>${placemark.name}</strong>
+          <br/>
+          ${placemark.description}
+        `
+      );
+
+    }
+
+  }
+
+  async function loadSatelliteMarkers() {
+    for (const placemark of currentPlacemarks.placemarks) {
+      await satelliteMap.addMarker(
+        placemark.latitude,
+        placemark.longitude,
+
+        `
+          <strong>${placemark.name}</strong>
+          <br/>
+          ${placemark.description}
+        `
+      );
+    }
+  }
+
 </script>
 
-<section class="hero is-info mb-5">
-
+<section class="hero is-primary mb-5">
   <div class="hero-body">
-
     <p class="title">
-      Multi-Map Dashboard
+      Interactive POI Maps
     </p>
-
     <p class="subtitle">
-      Explore placemarks across multiple map views
+      Explore Blackrock & SETU locations
     </p>
-
   </div>
-
 </section>
 
-<div class="columns">
+<!-- CATEGORY FILTER -->
 
+<Card title="Filter by Category">
+  <div class="field">
+    <label class="label">
+      Select Category
+    </label>
+    <div class="select is-fullwidth">
+      <select
+        bind:value={selectedCategory}
+        onchange={() => loadFilteredMarkers()}
+      >
+        <option value="">
+          All Categories
+        </option>
+
+        {#each currentPlaylists.playlists as playlist}
+
+          <option value={playlist._id}>
+            {playlist.title}
+          </option>
+
+        {/each}
+      </select>
+    </div>
+  </div>
+</Card>
+
+<!-- MAPS -->
+
+<div class="columns mt-5">
   <div class="column">
-
-    <Card title="All Placemarks">
+    <Card title="All POIs Map">
 
       <LeafletMap
         height={45}
         bind:this={allMap}
       />
-
     </Card>
-
   </div>
 
   <div class="column">
-
-    <Card title="Category Map">
+    <Card title="Filtered POIs">
 
       <LeafletMap
         height={45}
-        bind:this={categoryMap}
+        bind:this={filteredMap}
       />
 
     </Card>
-
   </div>
-
 </div>
 
 <div class="mt-5">
-
-  <Card title="Satellite Overview">
+  <Card title="Satellite View">
 
     <LeafletMap
-      height={50}
+      height={55}
       activeLayer="Satellite"
       bind:this={satelliteMap}
     />
-
   </Card>
-
 </div>
