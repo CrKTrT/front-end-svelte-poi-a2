@@ -1,15 +1,16 @@
 <script lang="ts">
 
   import "leaflet/dist/leaflet.css";
+  import "leaflet.markercluster/dist/MarkerCluster.css";
+  import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+
   import { onMount } from "svelte";
-  import type { Control, Map as LeafletMapType } from "leaflet";
+  import type { Map as LeafletMapType } from "leaflet";
 
   let {
     height = 50,
     activeLayer = "Terrain"
   } = $props();
-
-  // UNIQUE MAP ID
 
   let id =
     "map-" +
@@ -17,91 +18,81 @@
       .toString(36)
       .substring(2, 9);
 
-  // DEFAULT LOCATION (BLACKROCK)
-
   let location = {
     lat: 52.2605,
     lng: -7.0724
   };
 
   let zoom = 12;
-  let minZoom = 7;
+
   let imap: LeafletMapType;
+
   let markersLayer: any;
-  let overlays: Control.LayersObject = {};
-  let baseLayers: any;
+
   let L: any;
 
   onMount(async () => {
 
     const leaflet = await import("leaflet");
 
+    await import("leaflet.markercluster");
+
+    await import("leaflet.heat");
+
     L = leaflet.default;
 
-    // TILE LAYERS
+    const terrainLayer = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        maxZoom: 18,
+        attribution:
+          "© OpenStreetMap contributors"
+      }
+    );
 
-    baseLayers = {
+    const satelliteLayer = L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      {
+        attribution: "Tiles © Esri"
+      }
+    );
 
-      Terrain: leaflet.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-          maxZoom: 18,
+    const selectedLayer =
+      activeLayer === "Satellite"
+        ? satelliteLayer
+        : terrainLayer;
 
-          attribution:
-            'Map data © OpenStreetMap contributors'
-        }
-      ),
-
-      Satellite: leaflet.tileLayer(
-        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        {
-          attribution:
-            "Tiles © Esri"
-        }
-      )
-
-    };
-
-    const defaultLayer =
-      baseLayers[activeLayer];
-
-    // CREATE MAP
-
-    imap = leaflet.map(id, {
-
+    imap = L.map(id, {
       center: [
         location.lat,
         location.lng
       ],
-
-      zoom,
-
-      minZoom,
-
-      layers: [defaultLayer]
-
+      zoom: zoom,
+      layers: [selectedLayer]
     });
 
-    // MARKERS LAYER
+    const baseMaps = {
+      Terrain: terrainLayer,
+      Satellite: satelliteLayer
+    };
 
-    markersLayer =
-      leaflet.layerGroup().addTo(imap);
+    L.control.layers(baseMaps).addTo(imap);
 
-    // LAYER CONTROL
+    // MARKER CLUSTER
 
-    leaflet.control
-      .layers(baseLayers, overlays)
-      .addTo(imap);
+    markersLayer = L.markerClusterGroup();
 
-    // FIX EMPTY MAP ISSUE
+    imap.addLayer(markersLayer);
 
     setTimeout(() => {
       imap.invalidateSize();
-    }, 300);
+    }, 500);
 
   });
 
+  // =========================
   // ADD MARKER
+  // =========================
 
   export async function addMarker(
     lat: number,
@@ -113,20 +104,18 @@
       return;
     }
 
-    const leaflet = await import("leaflet");
-
-    L = leaflet.default;
-
     const marker =
       L.marker([lat, lng]);
 
     marker.bindPopup(popupText);
 
-    marker.addTo(markersLayer);
+    markersLayer.addLayer(marker);
 
   }
 
+  // =========================
   // CLEAR MARKERS
+  // =========================
 
   export function clearMarkers() {
 
@@ -138,21 +127,33 @@
 
   }
 
-  // MOVE MAP
+  // =========================
+  // HEATMAP
+  // =========================
 
-  export async function moveTo(
-    lat: number,
-    lng: number
-  ) {
+  export function addHeatmap(points: any[]) {
 
-    if (!imap) {
+    if (!imap || !L.heatLayer) {
       return;
     }
 
-    imap.flyTo(
-      [lat, lng],
-      13
-    );
+    const heatPoints = points.map((p) => [
+
+      p.latitude,
+
+      p.longitude,
+
+      1
+
+    ]);
+
+    L.heatLayer(heatPoints, {
+
+      radius: 25,
+
+      blur: 18
+
+    }).addTo(imap);
 
   }
 
@@ -161,7 +162,7 @@
 <div
   {id}
   class="map-container"
-  style="height: {height}vh"
+  style="height:{height}vh"
 ></div>
 
 <style>
@@ -170,7 +171,7 @@
 
     width: 100%;
 
-    border-radius: 12px;
+    border-radius: 14px;
 
     overflow: hidden;
 

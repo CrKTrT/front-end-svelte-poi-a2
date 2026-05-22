@@ -2,7 +2,7 @@
 
   import { onMount, tick } from "svelte";
   import { currentPlaylists, currentPlacemarks, subTitle } from "$lib/runes.svelte";
-  import { donationService }  from "$lib/services/donation-service";
+  import { donationService } from "$lib/services/donation-service";
   import Card from "$lib/ui/Card.svelte";
   import LeafletMap from "$lib/ui/LeafletMap.svelte";
 
@@ -14,24 +14,20 @@
   let satelliteMap: LeafletMap;
   let selectedCategory = $state("");
 
+  // =========================
   // LOAD EVERYTHING
+  // =========================
 
   onMount(async () => {
-
-    // RESTORE SESSION + LOAD DATA
 
     await donationService.restoreSession();
 
     await tick();
 
-    // SMALL DELAY ENSURES MAPS READY
-
     setTimeout(async () => {
 
       await loadAllMarkers();
-
       await loadFilteredMarkers();
-
       await loadSatelliteMarkers();
 
     }, 500);
@@ -149,7 +145,6 @@
           placemark.longitude,
 
           `
-            
             <div style="width:220px">
 
               ${
@@ -176,13 +171,20 @@
               ${placemark.description}
 
             </div>
-            
           `
         );
 
       }
 
     }
+
+    // =========================
+    // HEATMAP
+    // =========================
+
+    satelliteMap.addHeatmap(
+      currentPlacemarks.placemarks
+    );
 
   }
 
