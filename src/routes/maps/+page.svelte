@@ -1,41 +1,54 @@
 <script lang="ts">
 
   import { onMount, tick } from "svelte";
-
   import { currentPlaylists, currentPlacemarks, subTitle } from "$lib/runes.svelte";
-
+  import { donationService }  from "$lib/services/donation-service";
   import Card from "$lib/ui/Card.svelte";
-
   import LeafletMap from "$lib/ui/LeafletMap.svelte";
 
   subTitle.text =
     "Interactive POI Maps";
 
   let allMap: LeafletMap;
-
   let filteredMap: LeafletMap;
-
   let satelliteMap: LeafletMap;
-
   let selectedCategory = $state("");
 
   // LOAD EVERYTHING
 
   onMount(async () => {
 
+    // RESTORE SESSION + LOAD DATA
+
+    await donationService.restoreSession();
+
     await tick();
 
-    await loadAllMarkers();
+    // SMALL DELAY ENSURES MAPS READY
 
-    await loadFilteredMarkers();
+    setTimeout(async () => {
 
-    await loadSatelliteMarkers();
+      await loadAllMarkers();
+
+      await loadFilteredMarkers();
+
+      await loadSatelliteMarkers();
+
+    }, 500);
 
   });
 
+  // =========================
   // ALL MAP
+  // =========================
 
   async function loadAllMarkers() {
+
+    if (!allMap) {
+      return;
+    }
+
+    allMap.clearMarkers();
 
     for (const placemark of currentPlacemarks.placemarks) {
 
@@ -62,7 +75,9 @@
 
   }
 
+  // =========================
   // FILTERED MAP
+  // =========================
 
   async function loadFilteredMarkers() {
 
@@ -109,9 +124,17 @@
 
   }
 
+  // =========================
   // SATELLITE MAP
+  // =========================
 
   async function loadSatelliteMarkers() {
+
+    if (!satelliteMap) {
+      return;
+    }
+
+    satelliteMap.clearMarkers();
 
     for (const placemark of currentPlacemarks.placemarks) {
 
@@ -139,3 +162,110 @@
   }
 
 </script>
+
+<!-- HERO -->
+
+<section class="hero is-primary mb-5">
+
+  <div class="hero-body">
+
+    <p class="title">
+      Interactive POI Maps
+    </p>
+
+    <p class="subtitle">
+      Explore Blackrock & SETU locations
+    </p>
+
+  </div>
+
+</section>
+
+<!-- FILTER -->
+
+<Card title="Filter by Category">
+
+  <div class="field">
+
+    <label class="label">
+      Select Category
+    </label>
+
+    <div class="select is-fullwidth">
+
+      <select
+        bind:value={selectedCategory}
+        onchange={() => loadFilteredMarkers()}
+      >
+
+        <option value="">
+          All Categories
+        </option>
+
+        {#each currentPlaylists.playlists as playlist}
+
+          <option value={playlist._id}>
+            {playlist.title}
+          </option>
+
+        {/each}
+
+      </select>
+
+    </div>
+
+  </div>
+
+</Card>
+
+<!-- MAP GRID -->
+
+<div class="columns mt-5">
+
+  <!-- ALL POI -->
+
+  <div class="column">
+
+    <Card title="All POIs Map">
+
+      <LeafletMap
+        height={45}
+        bind:this={allMap}
+      />
+
+    </Card>
+
+  </div>
+
+  <!-- FILTERED -->
+
+  <div class="column">
+
+    <Card title="Filtered POIs">
+
+      <LeafletMap
+        height={45}
+        bind:this={filteredMap}
+      />
+
+    </Card>
+
+  </div>
+
+</div>
+
+<!-- SATELLITE -->
+
+<div class="mt-5">
+
+  <Card title="Satellite View">
+
+    <LeafletMap
+      height={55}
+      activeLayer="Satellite"
+      bind:this={satelliteMap}
+    />
+
+  </Card>
+
+</div>

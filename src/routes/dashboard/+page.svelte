@@ -2,7 +2,12 @@
 
   import { onMount } from "svelte";
 
-  import { subTitle, currentPlaylists, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
+  import {
+    subTitle,
+    currentPlaylists,
+    currentPlacemarks,
+    loggedInUser
+  } from "$lib/runes.svelte";
 
   import { donationService } from "$lib/services/donation-service";
 
@@ -25,7 +30,7 @@
 
   let editLongitude = $state(0);
 
-  // FILTER STATE (for next step)
+  // FILTER STATE
 
   let selectedCategory = $state("");
 
@@ -186,7 +191,6 @@
 
 </script>
 
-
 <!-- HERO -->
 
 <section class="hero is-primary mb-5">
@@ -194,7 +198,7 @@
   <div class="hero-body">
 
     <p class="title">
-       Blackrock → SETU POI Explorer
+      Blackrock → SETU POI Explorer
     </p>
 
     <p class="subtitle">
@@ -205,205 +209,101 @@
 
 </section>
 
-<!-- STATS -->
+<!-- MAIN CONTAINER -->
 
-<div class="columns mb-5">
+<div class="container is-fluid px-5 dashboard-container">
 
-  <div class="column">
+  <!-- STATS -->
 
-    <div class="box has-text-centered">
+  <div class="columns is-variable is-5 mb-5">
 
-      <p class="heading">
-        Categories
-      </p>
+    <div class="column">
 
-      <p class="title">
-        {currentPlaylists.playlists.length}
-      </p>
+      <div class="box has-text-centered stats-card">
+
+        <p class="heading">
+          Categories
+        </p>
+
+        <p class="title">
+          {currentPlaylists.playlists.length}
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="column">
+
+      <div class="box has-text-centered stats-card">
+
+        <p class="heading">
+          Placemarks
+        </p>
+
+        <p class="title">
+          {currentPlacemarks.placemarks.length}
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="column">
+
+      <div class="box has-text-centered stats-card">
+
+        <p class="heading">
+          Logged In User
+        </p>
+
+        <p class="title is-5">
+          {loggedInUser.name}
+        </p>
+
+      </div>
 
     </div>
 
   </div>
 
-  <div class="column">
+  <!-- MAIN CONTENT -->
 
-    <div class="box has-text-centered">
+  <div class="columns is-variable is-5">
 
-      <p class="heading">
-        Placemarks
-      </p>
+    <!-- LEFT COLUMN -->
 
-      <p class="title">
-        {currentPlacemarks.placemarks.length}
-      </p>
+    <div class="column is-4-desktop is-12-tablet">
 
-    </div>
+      <!-- CATEGORIES -->
 
-  </div>
+      <Card title=" POI Categories">
 
-  <div class="column">
+        {#if currentPlaylists.playlists.length > 0}
 
-    <div class="box has-text-centered">
+          {#each currentPlaylists.playlists as playlist}
 
-      <p class="heading">
-        Logged In User
-      </p>
+            <div class="box mb-3">
 
-      <p class="title is-5">
-         {loggedInUser.name}
-      </p>
+              <div class="level">
 
-    </div>
+                <div class="level-left">
 
-  </div>
+                  <strong>
+                    {playlist.title}
+                  </strong>
 
-</div>
+                </div>
 
-<!-- MAIN CONTENT -->
-
-<div class="columns">
-
-  <!-- LEFT COLUMN -->
-
-  <div class="column is-4">
-
-    <!-- CATEGORIES -->
-
-    <Card title=" POI Categories">
-
-      {#if currentPlaylists.playlists.length > 0}
-
-        {#each currentPlaylists.playlists as playlist}
-
-          <div class="box mb-3">
-
-            <div class="level">
-
-              <div class="level-left">
-
-                <strong>
-                  {playlist.title}
-                </strong>
-
-              </div>
-
-              <div class="level-right">
-
-                <button
-                  class="button is-small is-danger"
-                  onclick={() => deletePlaylist(playlist._id)}
-                >
-                  Delete
-                </button>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        {/each}
-
-      {:else}
-
-        <p>No categories available.</p>
-
-      {/if}
-
-    </Card>
-
-    <!-- ADD CATEGORY / PLACEMARK -->
-
-    <div class="mt-5">
-
-      <Card title=" Add New POI">
-
-        <Dashboard />
-
-      </Card>
-
-    </div>
-
-  </div>
-
-  <!-- RIGHT COLUMN -->
-
-  <div class="column">
-
-    <Card title=" Recent Placemarks">
-
-      {#if currentPlacemarks.placemarks.length > 0}
-
-        <div class="columns is-multiline">
-
-          {#each currentPlacemarks.placemarks as placemark}
-
-            <div class="column is-6">
-
-              <div class="card">
-
-                <!-- IMAGE -->
-
-                {#if placemark.image}
-
-                  <div class="card-image">
-
-                    <figure class="image mb-3">
-
-                        <img
-                          src={placemark.image}
-                          alt={placemark.name}
-                          style="
-                            border-radius: 12px;
-                            object-fit: cover;
-                            max-height: 220px;
-                            width: 100%;
-                          "
-                        />
-
-                      </figure>
-
-                  </div>
-
-                {/if}
-
-                <!-- CONTENT --> 
-
-              <div class="card-content">
-
-                <p class="title is-5">
-                     {placemark.name}
-                </p>
-
-                <p class="content">
-                    {placemark.description}
-                </p>
-
-                <p class="mb-3">
-
-                    <strong>Lat:</strong>
-                    {placemark.latitude}
-
-                    <br />
-
-                    <strong>Lng:</strong>
-                    {placemark.longitude}
-
-                 </p>
+                <div class="level-right">
 
                   <button
                     class="button is-small is-danger"
-                    onclick={() => deletePlacemark(placemark._id!)}
+                    onclick={() => deletePlaylist(playlist._id)}
                   >
-                    Delete Placemark
+                    Delete
                   </button>
 
-                  <button
-                    class="button is-small is-info ml-2"
-                    onclick={() => openEditModal(placemark)}
-                  >
-                    Edit Placemark
-                  </button>
                 </div>
 
               </div>
@@ -412,126 +312,335 @@
 
           {/each}
 
+        {:else}
+
+          <p>No categories available.</p>
+
+        {/if}
+
+      </Card>
+
+      <!-- ADD CATEGORY / PLACEMARK -->
+
+      <div class="mt-5">
+
+        <Card title=" Add New POI">
+
+          <Dashboard />
+
+        </Card>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+
+    <div class="column is-8-desktop is-12-tablet">
+
+      <Card title=" Recent Placemarks">
+
+        <div class="content-wrapper">
+
+          {#if currentPlacemarks.placemarks.length > 0}
+
+            <div class="columns is-multiline">
+
+              {#each currentPlacemarks.placemarks as placemark}
+
+                <div class="column is-6">
+
+                  <div class="card dashboard-card">
+
+                    <!-- IMAGE -->
+
+                    {#if placemark.image}
+
+                      <div class="card-image">
+
+                        <figure class="image">
+
+                          <img
+                            src={placemark.image}
+                            alt={placemark.name}
+                            style="
+                              object-fit: cover;
+                              max-height: 240px;
+                              width: 100%;
+                            "
+                          />
+
+                        </figure>
+
+                      </div>
+
+                    {/if}
+
+                    <!-- CONTENT -->
+
+                    <div class="card-content">
+
+                      <p class="title is-5">
+                        {placemark.name}
+                      </p>
+
+                      <p class="content">
+                        {placemark.description}
+                      </p>
+
+                      <p class="mb-4">
+
+                        <strong>Lat:</strong>
+                        {placemark.latitude}
+
+                        <br />
+
+                        <strong>Lng:</strong>
+                        {placemark.longitude}
+
+                      </p>
+
+                      <div class="buttons">
+
+                        <button
+                          class="button is-small is-danger"
+                          onclick={() => deletePlacemark(placemark._id!)}
+                        >
+                          Delete Placemark
+                        </button>
+
+                        <button
+                          class="button is-small is-info"
+                          onclick={() => openEditModal(placemark)}
+                        >
+                          Edit Placemark
+                        </button>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              {/each}
+
+            </div>
+
+          {:else}
+
+            <p>No placemarks available.</p>
+
+          {/if}
+
         </div>
 
-      {:else}
+      </Card>
 
-        <p>No placemarks available.</p>
-
-      {/if}
-
-    </Card>
+    </div>
 
   </div>
 
 </div>
+
+<!-- EDIT MODAL -->
 
 {#if editingPlacemark}
 
-<div class="modal is-active">
+  <div class="modal is-active">
 
-  <div
-    class="modal-background"
-    onclick={() => editingPlacemark = null}
-  ></div>
+    <div
+      class="modal-background"
+      onclick={() => editingPlacemark = null}
+    ></div>
 
-  <div class="modal-card">
+    <div class="modal-card">
 
-    <header class="modal-card-head">
+      <header class="modal-card-head">
 
-      <p class="modal-card-title">
-        Edit Placemark
-      </p>
+        <p class="modal-card-title">
+          Edit Placemark
+        </p>
 
-      <button
-        class="delete"
-        aria-label="close"
-        onclick={() => editingPlacemark = null}
-      ></button>
+        <button
+          class="delete"
+          aria-label="close"
+          onclick={() => editingPlacemark = null}
+        ></button>
 
-    </header>
+      </header>
 
-    <section class="modal-card-body">
+      <section class="modal-card-body">
 
-      <div class="field">
+        <div class="field">
 
-        <label class="label">
-          Name
-        </label>
+          <label class="label">
+            Name
+          </label>
 
-        <input
-          bind:value={editName}
-          class="input"
-          type="text"
-        />
+          <input
+            bind:value={editName}
+            class="input"
+            type="text"
+          />
 
-      </div>
+        </div>
 
-      <div class="field">
+        <div class="field">
 
-        <label class="label">
-          Description
-        </label>
+          <label class="label">
+            Description
+          </label>
 
-        <textarea
-          bind:value={editDescription}
-          class="textarea"
-        ></textarea>
+          <textarea
+            bind:value={editDescription}
+            class="textarea"
+          ></textarea>
 
-      </div>
+        </div>
 
-      <div class="field">
+        <div class="field">
 
-        <label class="label">
-          Latitude
-        </label>
+          <label class="label">
+            Latitude
+          </label>
 
-        <input
-          bind:value={editLatitude}
-          class="input"
-          type="number"
-          step="any"
-        />
+          <input
+            bind:value={editLatitude}
+            class="input"
+            type="number"
+            step="any"
+          />
 
-      </div>
+        </div>
 
-      <div class="field">
+        <div class="field">
 
-        <label class="label">
-          Longitude
-        </label>
+          <label class="label">
+            Longitude
+          </label>
 
-        <input
-          bind:value={editLongitude}
-          class="input"
-          type="number"
-          step="any"
-        />
+          <input
+            bind:value={editLongitude}
+            class="input"
+            type="number"
+            step="any"
+          />
 
-      </div>
+        </div>
 
-    </section>
+      </section>
 
-    <footer class="modal-card-foot">
+      <footer class="modal-card-foot">
 
-      <button
-        class="button is-success"
-        onclick={() => updatePlacemark()}
-      >
-        Save Changes
-      </button>
+        <button
+          class="button is-success"
+          onclick={() => updatePlacemark()}
+        >
+          Save Changes
+        </button>
 
-      <button
-        class="button"
-        onclick={() => editingPlacemark = null}
-      >
-        Cancel
-      </button>
+        <button
+          class="button"
+          onclick={() => editingPlacemark = null}
+        >
+          Cancel
+        </button>
 
-    </footer>
+      </footer>
+
+    </div>
 
   </div>
 
-</div>
-
 {/if}
+
+<style>
+
+  .dashboard-container {
+
+    max-width: 1600px;
+
+    margin: auto;
+
+  }
+
+  .dashboard-card {
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    transition: 0.25s ease;
+
+    box-shadow:
+      0 4px 14px rgba(0,0,0,0.08);
+
+    height: 100%;
+
+  }
+
+  .dashboard-card:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow:
+      0 8px 20px rgba(0,0,0,0.12);
+
+  }
+
+  .stats-card {
+
+    border-radius: 18px;
+
+    box-shadow:
+      0 4px 12px rgba(0,0,0,0.06);
+
+  }
+
+  .hero {
+
+    border-radius: 0 0 18px 18px;
+
+    overflow: hidden;
+
+  }
+
+  .content-wrapper {
+
+    max-height: 75vh;
+
+    overflow-y: auto;
+
+    padding-right: 8px;
+
+  }
+
+  .content-wrapper::-webkit-scrollbar {
+
+    width: 8px;
+
+  }
+
+  .content-wrapper::-webkit-scrollbar-thumb {
+
+    background: rgba(0,0,0,0.2);
+
+    border-radius: 10px;
+
+  }
+
+  .card-image img {
+
+    transition: 0.3s ease;
+
+  }
+
+  .dashboard-card:hover .card-image img {
+
+    transform: scale(1.02);
+
+  }
+
+</style>

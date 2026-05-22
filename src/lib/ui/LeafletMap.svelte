@@ -1,89 +1,179 @@
 <script lang="ts">
+
   import "leaflet/dist/leaflet.css";
   import { onMount } from "svelte";
-  import type { Control, Map as LeafletMap } from "leaflet";
+  import type { Control, Map as LeafletMapType } from "leaflet";
 
-  let { height = 80, activeLayer = "Terrain" } = $props();
-  //let id = "home-map-id";
-  let id = "map-" + Math.random().toString(36).substring(2, 9);
-  let location = { lat: 53.2734, lng: -7.7783203 };
-  let zoom = 8;
+  let {
+    height = 50,
+    activeLayer = "Terrain"
+  } = $props();
+
+  // UNIQUE MAP ID
+
+  let id =
+    "map-" +
+    Math.random()
+      .toString(36)
+      .substring(2, 9);
+
+  // DEFAULT LOCATION (BLACKROCK)
+
+  let location = {
+    lat: 52.2605,
+    lng: -7.0724
+  };
+
+  let zoom = 12;
   let minZoom = 7;
- 
-  let imap: LeafletMap;
-  let control: Control.Layers;
+  let imap: LeafletMapType;
+  let markersLayer: any;
   let overlays: Control.LayersObject = {};
   let baseLayers: any;
   let L: any;
-  let markers: any[] = [];
 
   onMount(async () => {
+
     const leaflet = await import("leaflet");
+
     L = leaflet.default;
+
+    // TILE LAYERS
+
     baseLayers = {
-      Terrain: leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 17,
-        attribution:
-          'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-      }),
+
+      Terrain: leaflet.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          maxZoom: 18,
+
+          attribution:
+            'Map data © OpenStreetMap contributors'
+        }
+      ),
+
       Satellite: leaflet.tileLayer(
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         {
           attribution:
-            "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+            "Tiles © Esri"
         }
       )
+
     };
-    let defaultLayer = baseLayers[activeLayer];
+
+    const defaultLayer =
+      baseLayers[activeLayer];
+
+    // CREATE MAP
+
     imap = leaflet.map(id, {
-      center: [location.lat, location.lng],
-      zoom: zoom,
-      minZoom: minZoom,
+
+      center: [
+        location.lat,
+        location.lng
+      ],
+
+      zoom,
+
+      minZoom,
+
       layers: [defaultLayer]
-    });
-    control = leaflet.control.layers(baseLayers, overlays).addTo(imap);
-  });
 
-  export async function addMarker( lat: number, lng: number, popupText: string ) {
-
-  const leaflet = await import("leaflet");
-
-  L = leaflet.default;
-
-  const marker =
-    L.marker([lat, lng]).addTo(imap);
-
-  markers.push(marker);
-
-  const popup =
-    L.popup({
-      autoClose: false,
-      closeOnClick: false
     });
 
-  popup.setContent(popupText);
+    // MARKERS LAYER
 
-  marker.bindPopup(popup);
+    markersLayer =
+      leaflet.layerGroup().addTo(imap);
 
-  }
+    // LAYER CONTROL
 
-export function clearMarkers() {
+    leaflet.control
+      .layers(baseLayers, overlays)
+      .addTo(imap);
 
-  markers.forEach((marker) => {
+    // FIX EMPTY MAP ISSUE
 
-    imap.removeLayer(marker);
+    setTimeout(() => {
+      imap.invalidateSize();
+    }, 300);
 
   });
 
-  markers = [];
+  // ADD MARKER
 
-  }
+  export async function addMarker(
+    lat: number,
+    lng: number,
+    popupText: string
+  ) {
 
-  export async function moveTo(lat: number, lng: number) {
+    if (!imap || !markersLayer) {
+      return;
+    }
+
     const leaflet = await import("leaflet");
+
     L = leaflet.default;
-    imap.flyTo({ lat: lat, lng: lng });
+
+    const marker =
+      L.marker([lat, lng]);
+
+    marker.bindPopup(popupText);
+
+    marker.addTo(markersLayer);
+
   }
+
+  // CLEAR MARKERS
+
+  export function clearMarkers() {
+
+    if (markersLayer) {
+
+      markersLayer.clearLayers();
+
+    }
+
+  }
+
+  // MOVE MAP
+
+  export async function moveTo(
+    lat: number,
+    lng: number
+  ) {
+
+    if (!imap) {
+      return;
+    }
+
+    imap.flyTo(
+      [lat, lng],
+      13
+    );
+
+  }
+
 </script>
 
-<div {id} class="box" style="height: {height}vh"></div>
+<div
+  {id}
+  class="map-container"
+  style="height: {height}vh"
+></div>
+
+<style>
+
+  .map-container {
+
+    width: 100%;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+  }
+
+</style>
