@@ -1,18 +1,9 @@
 <script lang="ts">
 
   import { onMount } from "svelte";
-
-  import {
-    subTitle,
-    currentPlaylists,
-    currentPlacemarks,
-    loggedInUser
-  } from "$lib/runes.svelte";
-
+  import { subTitle, currentPlaylists, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
   import { donationService } from "$lib/services/donation-service";
-
   import Card from "$lib/ui/Card.svelte";
-
   import Dashboard from "./Dashboard.svelte";
 
   subTitle.text =
@@ -21,31 +12,21 @@
   // EDIT MODAL STATE
 
   let editingPlacemark = $state<any | null>(null);
-
   let editName = $state("");
-
   let editDescription = $state("");
-
   let editLatitude = $state(0);
-
   let editLongitude = $state(0);
 
   // FILTER STATE
-
   let selectedCategory = $state("");
 
   onMount(async () => {
-
     await donationService.restoreSession();
-
   });
 
   // DELETE CATEGORY
-
   async function deletePlaylist(id: string) {
-
     try {
-
       const response =
         await fetch(
           `http://localhost:3000/api/playlists/${id}`,
@@ -61,25 +42,17 @@
         );
 
       if (response.ok) {
-
         await donationService.refreshAppData();
-
       }
-
     } catch (error) {
-
       console.log(error);
-
     }
-
   }
 
   // DELETE PLACEMARK
 
   async function deletePlacemark(id: string) {
-
     try {
-
       const response =
         await fetch(
           `http://localhost:3000/api/tracks/${id}`,
@@ -95,17 +68,11 @@
         );
 
       if (response.ok) {
-
         await donationService.refreshAppData();
-
       }
-
     } catch (error) {
-
       console.log(error);
-
     }
-
   }
 
   // OPEN EDIT MODAL
@@ -113,83 +80,54 @@
   function openEditModal(placemark: any) {
 
     editingPlacemark = placemark;
-
-    editName =
-      placemark.name;
-
-    editDescription =
-      placemark.description;
-
-    editLatitude =
-      placemark.latitude;
-
-    editLongitude =
-      placemark.longitude;
+    editName = placemark.name;
+    editDescription = placemark.description;
+    editLatitude = placemark.latitude;
+    editLongitude = placemark.longitude;
 
   }
 
   // UPDATE PLACEMARK
 
   async function updatePlacemark() {
-
     if (!editingPlacemark) {
-
       return;
-
     }
-
     try {
-
       const response =
         await fetch(
           `http://localhost:3000/api/tracks/${editingPlacemark._id}`,
           {
-
             method: "PUT",
-
             headers: {
+              "Content-Type": "application/json",
 
-              "Content-Type":
-                "application/json",
-
-              Authorization:
-                "Bearer " +
-                loggedInUser.token
+              Authorization:  "Bearer " + loggedInUser.token
 
             },
 
             body: JSON.stringify({
-
               name: editName,
-
               description: editDescription,
-
               latitude: editLatitude,
-
               longitude: editLongitude
 
             })
-
           }
         );
 
       if (response.ok) {
-
         editingPlacemark = null;
-
         await donationService.refreshAppData();
-
       }
-
     } catch (error) {
-
       console.log(error);
-
     }
-
   }
 
 </script>
+
+<div class="dashboard-wrapper">
 
 <!-- HERO -->
 
@@ -295,26 +233,26 @@
 
                 </div>
 
-                <div class="level-right">
+                  <div class="level-right">
 
-                  <button
-                    class="button is-small is-danger"
-                    onclick={() => deletePlaylist(playlist._id)}
-                  >
-                    Delete
-                  </button>
+                    <button
+                      class="button is-small is-danger"
+                      onclick={() => deletePlaylist(playlist._id)}
+                    >
+                      Delete
+                    </button>
+
+                  </div>
 
                 </div>
 
-              </div>
-
             </div>
 
-          {/each}
+            {/each}
 
-        {:else}
+          {:else}
 
-          <p>No categories available.</p>
+            <p>No categories available.</p>
 
         {/if}
 
@@ -552,17 +490,49 @@
 
     </div>
 
-  </div>
+  
+</div>
 
 {/if}
+</div>
 
 <style>
 
-  .dashboard-container {
+  .dashboard-wrapper {
 
-    max-width: 1600px;
+    max-width: 1400px;
 
     margin: auto;
+
+    padding: 1.5rem;
+
+  }
+
+  .hero-section {
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow:
+      0 8px 20px rgba(0,0,0,0.08);
+
+  }
+
+  .stats-card {
+
+    border-radius: 16px;
+
+    transition: 0.3s ease;
+
+    box-shadow:
+      0 4px 12px rgba(0,0,0,0.08);
+
+  }
+
+  .stats-card:hover {
+
+    transform: translateY(-4px);
 
   }
 
@@ -572,74 +542,66 @@
 
     overflow: hidden;
 
-    transition: 0.25s ease;
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    transition: 0.3s ease;
 
     box-shadow:
-      0 4px 14px rgba(0,0,0,0.08);
-
-    height: 100%;
+      0 6px 18px rgba(0,0,0,0.08);
 
   }
 
   .dashboard-card:hover {
 
-    transform: translateY(-4px);
-
-    box-shadow:
-      0 8px 20px rgba(0,0,0,0.12);
+    transform: translateY(-5px);
 
   }
 
-  .stats-card {
+  .dashboard-card img {
 
-    border-radius: 18px;
+    height: 240px;
 
-    box-shadow:
-      0 4px 12px rgba(0,0,0,0.06);
+    object-fit: cover;
 
-  }
-
-  .hero {
-
-    border-radius: 0 0 18px 18px;
-
-    overflow: hidden;
+    width: 100%;
 
   }
 
-  .content-wrapper {
+  .card-content {
 
-    max-height: 75vh;
-
-    overflow-y: auto;
-
-    padding-right: 8px;
+    flex-grow: 1;
 
   }
 
-  .content-wrapper::-webkit-scrollbar {
+  .sticky-panel {
 
-    width: 8px;
+    position: sticky;
 
-  }
+    top: 20px;
 
-  .content-wrapper::-webkit-scrollbar-thumb {
-
-    background: rgba(0,0,0,0.2);
-
-    border-radius: 10px;
+    align-self: flex-start;
 
   }
 
-  .card-image img {
+  @media screen and (max-width: 768px) {
 
-    transition: 0.3s ease;
+    .dashboard-wrapper {
 
-  }
+      padding: 0.75rem;
 
-  .dashboard-card:hover .card-image img {
+    }
 
-    transform: scale(1.02);
+    .sticky-panel {
+
+      position: relative;
+
+      top: 0;
+
+    }
 
   }
 

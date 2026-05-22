@@ -149,9 +149,34 @@
           placemark.longitude,
 
           `
-            <strong>${placemark.name}</strong>
-            <br/>
-            ${placemark.description}
+            
+            <div style="width:220px">
+
+              ${
+                placemark.image
+                  ? `
+                    <img
+                      src="${placemark.image}"
+                      style="
+                        width:100%;
+                        height:120px;
+                        object-fit:cover;
+                        border-radius:8px;
+                        margin-bottom:8px;
+                      "
+                    />
+                  `
+                  : ""
+              }
+
+              <strong>${placemark.name}</strong>
+
+              <br/>
+
+              ${placemark.description}
+
+            </div>
+            
           `
         );
 
