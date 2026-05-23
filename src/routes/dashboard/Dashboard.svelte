@@ -63,7 +63,8 @@
 
         title = "";
 
-        await donationService.refreshAppData();
+        //await donationService.refreshAppData();
+        window.location.reload();
 
       } else {
 
@@ -190,7 +191,8 @@
 
         imageFile = null;
 
-        await donationService.refreshAppData();
+        //await donationService.refreshAppData();
+        window.location.reload();
 
       } else {
 

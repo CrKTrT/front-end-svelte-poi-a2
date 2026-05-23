@@ -60,10 +60,6 @@
           Logout
         </a>
 
-        <a class="navbar-item" href="/maps">
-          Maps
-        </a>
-
       </div>
 
     </div>

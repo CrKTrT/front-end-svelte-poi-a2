@@ -2,40 +2,33 @@
   import Card from "$lib/ui/Card.svelte";
   import EChart from "$lib/ui/EChart.svelte";
 
-  import {
-    currentPlaylists,
-    currentPlacemarks
-  } from "$lib/runes.svelte";
+  import { currentPlaylists, currentPlacemarks } from "$lib/runes.svelte";
 
-  // CATEGORY ANALYTICS
-
+  // CATEGORY DATA (state)
   let categoryLabels: string[] = [];
   let categoryCounts: number[] = [];
 
+  // Recompute raw data when playlists or placemarks change
   $effect(() => {
-
-    categoryLabels = [];
-    categoryCounts = [];
+    const labels: string[] = [];
+    const counts: number[] = [];
 
     currentPlaylists.playlists.forEach((playlist) => {
+      labels.push(playlist.title);
 
-      categoryLabels.push(playlist.title);
+      const count = currentPlacemarks.placemarks.filter(
+        (placemark) => placemark.playlistid === playlist._id
+      ).length;
 
-      const count =
-        currentPlacemarks.placemarks.filter(
-          (placemark) =>
-            placemark.playlistid === playlist._id
-        ).length;
-
-      categoryCounts.push(count);
-
+      counts.push(count);
     });
 
+    categoryLabels = labels;
+    categoryCounts = counts;
   });
 
-  // BAR CHART
-
-  $: barOptions = {
+  // BAR CHART OPTIONS
+  const barOptions = $derived(() => ({
     tooltip: {},
     xAxis: {
       type: "category",
@@ -50,11 +43,10 @@
         type: "bar"
       }
     ]
-  };
+  }));
 
-  // PIE CHART
-
-  $: pieOptions = {
+  // PIE CHART OPTIONS
+  const pieOptions = $derived(() => ({
     tooltip: {
       trigger: "item"
     },
@@ -68,11 +60,10 @@
         }))
       }
     ]
-  };
+  }));
 
-  // SCATTER CHART
-
-  $: scatterOptions = {
+  // SCATTER CHART OPTIONS
+  const scatterOptions = $derived(() => ({
     tooltip: {},
     xAxis: {
       name: "Longitude"
@@ -84,16 +75,13 @@
       {
         type: "scatter",
         symbolSize: 15,
-        data:
-          currentPlacemarks.placemarks.map(
-            (placemark) => [
-              placemark.longitude,
-              placemark.latitude
-            ]
-          )
+        data: currentPlacemarks.placemarks.map((placemark) => [
+          placemark.longitude,
+          placemark.latitude
+        ])
       }
     ]
-  };
+  }));
 </script>
 
 <section class="hero is-info mb-5">

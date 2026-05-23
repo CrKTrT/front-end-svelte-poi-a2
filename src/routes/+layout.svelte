@@ -1,52 +1,44 @@
 <script lang="ts">
 
-  import Heading from "$lib/ui/Heading.svelte";
-  import Menu from "$lib/ui/Menu.svelte";
-  import { loggedInUser } from "$lib/runes.svelte";
-  //import type { LayoutData } from "./$types";
-
-  //let { data }: { data: LayoutData } = $props();
-
+import Menu from "$lib/ui/Menu.svelte";
+import { loggedInUser, subTitle } from "$lib/runes.svelte";
 
   let { data, children } = $props();
-  //let { children } = $props();
 
- $effect(() => {
+  $effect(() => {
 
-  if (data.session) {
+    if (data?.session) {
 
-    loggedInUser.email =
-      data.session.email;
+      loggedInUser.email =
+        data.session.email;
 
-    loggedInUser.name =
-      data.session.name;
+      loggedInUser.name =
+        data.session.name;
 
-    loggedInUser.token =
-      data.session.token;
+      loggedInUser.token =
+        data.session.token;
 
-    loggedInUser._id =
-      data.session._id;
-  } else {
+      loggedInUser._id =
+        data.session._id;
 
-    loggedInUser.email = "";
-    loggedInUser.name = "";
-    loggedInUser.token = "";
-    loggedInUser._id = "";
-  
-  }
- });
+    }
+
+  });
 
 </script>
 
-<div class="container">
+<div class="app-shell">
 
-  {#if loggedInUser.token}
-
+  {#if data.session}
     <Menu />
-    <Heading />
-
   {/if}
 
-  {@render children?.()}
+  <main class="main-content">
+
+    <h2>{subTitle.text}</h2>
+
+    {@render children()}
+
+  </main>
 
 </div>

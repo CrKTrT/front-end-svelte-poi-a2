@@ -1,25 +1,25 @@
 //This file created for SSR to load the session cookie and make it available to all pages in the app.
 import type { LayoutServerLoad } from "./$types";
-import type { Session } from "$lib/types/playtime-types";
 
-export const load: LayoutServerLoad = ({ cookies }) => {
+export const load: LayoutServerLoad =
+  async ({ cookies }) => {
 
-  const cookieStr =
-    cookies.get("playtime-user");
+    const sessionCookie =
+      cookies.get("playtime");
 
-  if (cookieStr) {
+    if (!sessionCookie) {
 
-    //const session =
-      //JSON.parse(cookieStr) as Session;
+      return {
+        session: null
+      };
+
+    }
 
     return {
-      session: JSON.parse(cookieStr) as Session
+
+      session:
+        JSON.parse(sessionCookie)
+
     };
-
-  }
-
-  return {
-    session: null
-  };
 
 };

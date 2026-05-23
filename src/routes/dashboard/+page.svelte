@@ -2,7 +2,7 @@
 
   //import { onMount } from "svelte";
   import { subTitle, currentPlaylists, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
-  import { donationService } from "$lib/services/donation-service";
+  // import { donationService } from "$lib/services/donation-service";
   import Card from "$lib/ui/Card.svelte";
   import Dashboard from "./Dashboard.svelte";
   import type { PageProps }  from "./$types";
@@ -12,8 +12,15 @@
 
   let { data }: PageProps = $props();
 
-  currentPlaylists.playlists =  data.playlists;
-  currentPlacemarks.placemarks =  data.placemarks;
+  $effect(() => {
+
+  currentPlaylists.playlists =
+    data.playlists;
+
+  currentPlacemarks.placemarks =
+    data.placemarks;
+
+});
   
 
   // EDIT MODAL STATE

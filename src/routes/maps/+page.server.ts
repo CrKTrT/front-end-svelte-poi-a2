@@ -1,7 +1,8 @@
 // Created SSR for Maps page
 import type { PageServerLoad } from "./$types";
-import { playlistService } from "$lib/services/playlist-service";
-import { placemarkService } from "$lib/services/placemark-service";
+//import { playlistService } from "$lib/services/playlist-service";
+//import { placemarkService } from "$lib/services/placemark-service";
+import { donationService } from "$lib/services/donation-service";
 
 export const load: PageServerLoad =
   async ({ parent }) => {
@@ -21,12 +22,12 @@ export const load: PageServerLoad =
     return {
 
       playlists:
-        await playlistService.getPlaylists(
+        await donationService.getPlaylists(
           session.token
         ),
 
       placemarks:
-        await placemarkService.getPlacemarks(
+        await donationService.getPlacemarks(
           session.token
         )
 

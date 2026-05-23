@@ -9,9 +9,15 @@
 
 let { data }: PageProps = $props();
 
-currentPlaylists.playlists =  data.playlists;
+$effect(() => {
 
-currentPlacemarks.placemarks =  data.placemarks;
+  currentPlaylists.playlists =
+    data.playlists;
+
+  currentPlacemarks.placemarks =
+    data.placemarks;
+
+});
   
   subTitle.text =  "Interactive POI Maps";
 

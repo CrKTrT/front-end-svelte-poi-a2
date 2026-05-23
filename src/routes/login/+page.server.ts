@@ -26,7 +26,7 @@ export const actions = {
     if (session) {
 
       cookies.set(
-        "donation-user",
+        "playtime",
         JSON.stringify(session),
         {
           path: "/",
