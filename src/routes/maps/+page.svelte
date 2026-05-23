@@ -6,8 +6,15 @@
   import Card from "$lib/ui/Card.svelte";
   import LeafletMap from "$lib/ui/LeafletMap.svelte";
 
-  subTitle.text =
-    "Interactive POI Maps";
+  import type { PageProps }
+  from "./$types";
+
+let { data }: PageProps = $props();
+
+currentPlaylists.playlists =  data.playlists;
+currentPlacemarks.placemarks =  data.placemarks;
+  
+  subTitle.text =  "Interactive POI Maps";
 
   let allMap: LeafletMap;
   let filteredMap: LeafletMap;
