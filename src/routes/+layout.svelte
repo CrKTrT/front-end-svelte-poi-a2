@@ -3,9 +3,15 @@
   import Heading from "$lib/ui/Heading.svelte";
   import Menu from "$lib/ui/Menu.svelte";
   import { loggedInUser } from "$lib/runes.svelte";
-  import type { LayoutData } from "./$types";
+  //import type { LayoutData } from "./$types";
 
-  let { data }: { data: LayoutData } = $props();
+  //let { data }: { data: LayoutData } = $props();
+
+
+  let { data, children } = $props();
+  //let { children } = $props();
+
+ $effect(() => {
 
   if (data.session) {
 
@@ -20,15 +26,15 @@
 
     loggedInUser._id =
       data.session._id;
-
   } else {
 
     loggedInUser.email = "";
     loggedInUser.name = "";
     loggedInUser.token = "";
     loggedInUser._id = "";
-
+  
   }
+ });
 
 </script>
 
@@ -41,6 +47,6 @@
 
   {/if}
 
-  <slot />
+  {@render children?.()}
 
 </div>
