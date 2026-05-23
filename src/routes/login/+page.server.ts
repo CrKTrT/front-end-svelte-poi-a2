@@ -1,7 +1,8 @@
 //Created for SSR in SvelteKit, this file defines server-side actions for the login page. It handles user authentication by processing form data, interacting with a playtime service to validate credentials, and managing cookies for session handling. Depending on the authentication outcome, it redirects users to the appropriate page.
 import { redirect } from "@sveltejs/kit";
 import { dev } from "$app/environment";
-import { playtimeService } from "$lib/services/playtime-service";
+//import { playtimeService } from "$lib/services/playtime-service";
+import { donationService } from "$lib/services/donation-service";
 
 export const actions = {
 
@@ -17,7 +18,7 @@ export const actions = {
       form.get("password") as string;
 
     const session =
-      await playtimeService.login(
+      await donationService.login(
         email,
         password
       );
@@ -25,7 +26,7 @@ export const actions = {
     if (session) {
 
       cookies.set(
-        "playtime-user",
+        "donation-user",
         JSON.stringify(session),
         {
           path: "/",
