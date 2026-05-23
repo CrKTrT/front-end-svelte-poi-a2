@@ -56,8 +56,8 @@
 
         <!-- LOGOUT -->
 
-        <a class="navbar-item has-text-danger" href="/logout">
-           Logout
+        <a href="/logout" data-sveltekit-preload-data="tap" >
+          Logout
         </a>
 
         <a class="navbar-item" href="/maps">
