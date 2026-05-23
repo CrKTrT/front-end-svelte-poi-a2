@@ -2,16 +2,15 @@
 
   import { onMount, tick } from "svelte";
   import { currentPlaylists, currentPlacemarks, subTitle } from "$lib/runes.svelte";
-  import { donationService } from "$lib/services/donation-service";
+  // import { donationService } from "$lib/services/donation-service";
   import Card from "$lib/ui/Card.svelte";
   import LeafletMap from "$lib/ui/LeafletMap.svelte";
-
-  import type { PageProps }
-  from "./$types";
+  import type { PageProps } from "./$types";
 
 let { data }: PageProps = $props();
 
 currentPlaylists.playlists =  data.playlists;
+
 currentPlacemarks.placemarks =  data.placemarks;
   
   subTitle.text =  "Interactive POI Maps";
@@ -27,7 +26,7 @@ currentPlacemarks.placemarks =  data.placemarks;
 
   onMount(async () => {
 
-    await donationService.restoreSession();
+    // // await donationService.restoreSession();
 
     await tick();
 
