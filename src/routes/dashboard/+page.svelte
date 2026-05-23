@@ -1,16 +1,22 @@
 <script lang="ts">
 
-  import { onMount } from "svelte";
+  //import { onMount } from "svelte";
   import { subTitle, currentPlaylists, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
-  import { donationService } from "$lib/services/donation-service";
+  // import { donationService } from "$lib/services/donation-service";
   import Card from "$lib/ui/Card.svelte";
   import Dashboard from "./Dashboard.svelte";
+  import type { PageProps }  from "./$types";
 
   subTitle.text =
     "Blackrock to SETU Travel POI Dashboard";
 
-  // EDIT MODAL STATE
+  let { data }: PageProps = $props();
 
+  currentPlaylists.playlists =  data.playlists;
+  currentPlacemarks.placemarks =  data.placemarks;
+  
+
+  // EDIT MODAL STATE
   let editingPlacemark = $state<any | null>(null);
   let editName = $state("");
   let editDescription = $state("");
@@ -20,9 +26,7 @@
   // FILTER STATE
   let selectedCategory = $state("");
 
-  onMount(async () => {
-    await donationService.restoreSession();
-  });
+  // // onMount(async () => { await donationService.restoreSession();  });
 
   // DELETE CATEGORY
   async function deletePlaylist(id: string) {
