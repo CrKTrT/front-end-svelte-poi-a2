@@ -5,7 +5,7 @@ import type { Playlist, Placemark, Session, User } from "$lib/types/playtime-typ
 //import { currentPlaylists, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
 
 export const donationService = {
-  baseUrl: "http://localhost:3000", // Changed port same as the backend URL
+  baseUrl: "https://back-end-hapi-poi-a2.onrender.com", // Changed port same as the backend URL
 
   async signup(user: User): Promise<boolean> {
     try {
