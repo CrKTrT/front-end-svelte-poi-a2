@@ -5,15 +5,15 @@ import type { Session } from "$lib/types/playtime-types";
 export const load: LayoutServerLoad = ({ cookies }) => {
 
   const cookieStr =
-    cookies.get("playtime-user") as string;
+    cookies.get("playtime-user");
 
   if (cookieStr) {
 
-    const session =
-      JSON.parse(cookieStr) as Session;
+    //const session =
+      //JSON.parse(cookieStr) as Session;
 
     return {
-      session
+      session: JSON.parse(cookieStr) as Session
     };
 
   }

@@ -1,13 +1,8 @@
 <script lang="ts">
 
-  import { goto }
-    from "$app/navigation";
+  import { goto } from "$app/navigation";
 
-  import {
-    loggedInUser,
-    currentPlaylists,
-    currentPlacemarks
-  } from "$lib/runes.svelte";
+  import { loggedInUser, currentPlaylists, currentPlacemarks } from "$lib/runes.svelte";
 
   loggedInUser.email = "";
   loggedInUser.name = "";

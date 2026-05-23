@@ -2,7 +2,7 @@
 
   //import { onMount } from "svelte";
   import { subTitle, currentPlaylists, currentPlacemarks, loggedInUser } from "$lib/runes.svelte";
-  // import { donationService } from "$lib/services/donation-service";
+  import { donationService } from "$lib/services/donation-service";
   import Card from "$lib/ui/Card.svelte";
   import Dashboard from "./Dashboard.svelte";
   import type { PageProps }  from "./$types";
@@ -46,7 +46,7 @@
         );
 
       if (response.ok) {
-        await donationService.refreshAppData();
+        //await donationService.refreshAppData();
       }
     } catch (error) {
       console.log(error);
@@ -72,7 +72,7 @@
         );
 
       if (response.ok) {
-        await donationService.refreshAppData();
+        //await donationService.refreshAppData();
       }
     } catch (error) {
       console.log(error);
@@ -122,7 +122,7 @@
 
       if (response.ok) {
         editingPlacemark = null;
-        await donationService.refreshAppData();
+        //await donationService.refreshAppData();
       }
     } catch (error) {
       console.log(error);
